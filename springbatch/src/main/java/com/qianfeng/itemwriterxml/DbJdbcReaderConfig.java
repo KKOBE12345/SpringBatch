@@ -27,35 +27,43 @@ public class DbJdbcReaderConfig {
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * @Description: dbJdbcReader 从数据库中读取数据
+     * @Param: []
+     * @Return: org.springframework.batch.item.database.JdbcPagingItemReader<com.example.springbatchdemo.pojo.Customer>
+     */
     @Bean
     public JdbcPagingItemReader<Customer> dbJdbcReader() {
-        JdbcPagingItemReader<Customer> reader=new JdbcPagingItemReader<Customer>();
+        JdbcPagingItemReader<Customer> reader = new JdbcPagingItemReader<Customer>();
         reader.setDataSource(dataSource);
-        reader.setFetchSize(3);
-        //把读取到的记录  装换成User对象
+        //设置读取缓存,每次取5个
+        reader.setFetchSize(5);
+        //把读取到的记录转换成User对象
         reader.setRowMapper(new RowMapper<Customer>() {
+            /**
+             * @Description: 结果集的映射
+             * @Param: [resultSet, rowNum]
+             * @Return: com.example.springbootjdbc.pojo.Customer
+             */
             @Override
-            public Customer mapRow(ResultSet resultSet, int i) throws SQLException {
+            public Customer mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                 Customer customer = new Customer();
                 customer.setId(resultSet.getLong(1));
                 customer.setFirstName(resultSet.getString(2));
                 customer.setLastName(resultSet.getString(3));
                 customer.setBirthday(resultSet.getString(4));
-
                 return customer;
             }
         });
-        //指定SQL语句
-        MySqlPagingQueryProvider provider=new MySqlPagingQueryProvider();
-        provider.setSelectClause("id,firstName,lastName,birthday");
-        provider.setFromClause("from customer");
-        //根据那个字段实行排序
-        Map<String, Order> sort=new HashMap<>(1);
+        //指定sq1语句
+        MySqlPagingQueryProvider provider =new MySqlPagingQueryProvider () ;
+        provider.setSelectClause ("id,firstName,lastName,birthday") ;
+        provider.setFromClause ("from customer") ;
+        //指定根据哪个字段进行排序
+        Map<String, Order> sort = new HashMap<>(1) ;
         sort.put("id", Order.ASCENDING);
         provider.setSortKeys(sort);
-
         reader.setQueryProvider(provider);
-        System.out.println(123567890);
-        return reader;
+        return reader ;
     }
 }

@@ -32,8 +32,8 @@ public class XmlItemWriterDemo {
     private ItemWriter<Customer> xmlItemWriter;
 
     @Bean
-    public Job xmlItemWriterDemoJob4(){
-        return jobBuilderFactory.get("xmlItemWriterDemoJob94")
+    public Job xmlItemWriterDemoJob8(){
+        return jobBuilderFactory.get("xmlItemWriterDemoJob8")
                 .start(xmlItemWriterDemoStep())
                 .build();
 
@@ -43,7 +43,7 @@ public class XmlItemWriterDemo {
     public Step xmlItemWriterDemoStep() {
 
         return stepBuilderFactory.get("xmlItemWriterDemoStep")
-                .<Customer,Customer>chunk(3)
+                .<Customer,Customer>chunk(5)
                 .reader(dbJdbcReader)
                 .writer(xmlItemWriter)
                 .build();

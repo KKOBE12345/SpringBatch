@@ -18,25 +18,26 @@ import java.util.Map;
 @Configuration
 public class XmlItemWriterConfig {
     @Bean
-    public StaxEventItemWriter<Customer> xmlItemWriter() throws Exception {
-        StaxEventItemWriter<Customer> writer=new StaxEventItemWriter<Customer>();
-        XStreamMarshaller marshaller=new XStreamMarshaller();
-        Map<String,Class> aliases=new HashMap<>();
-        aliases.put("customer", Customer.class);
-        marshaller.setAliases(aliases);
+    public StaxEventItemWriter<Customer> xmlItemWriter(){
+        StaxEventItemWriter writer = new StaxEventItemWriter<Customer>();
+        XStreamMarshaller marshaller = new XStreamMarshaller();
+        //告诉marshaller把数据转成什么类型
+        Map<String,Class> map = new HashMap<>();
+        map.put("customer",Customer.class);
+        marshaller.setAliases(map);
 
-        //指定根标签
         writer.setRootTagName("customers");
         writer.setMarshaller(marshaller);
-        //指定写到哪个文件中
-        String path="H:\\kobe456.xml";
+
+        String path = "H:\\kobe456.xml";
         writer.setResource(new FileSystemResource(path));
-
-        System.out.println("kobe已经执行到这边了");
-
-        //检查一下写出操作
-        writer.afterPropertiesSet();
-        System.out.println(writer.toString());
+        try {
+            writer.afterPropertiesSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return writer;
+
     }
+
 }
